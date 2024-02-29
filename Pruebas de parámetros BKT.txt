@@ -1,0 +1,294 @@
+Este modelo podría servir para los ejercicios de aritmética:
+CONJUNTO DE PARÁMETROS 4
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.01
+p(G) = 0.3
+p(S) = 0.01
+observations = [False, False, False]
+Observación # 1 :
+p(L,t=1) = 0.010288545613523752
+Observación # 2 :
+p(L,t=2) = 0.010147000243549205
+Observación # 3 :
+p(L,t=3) = 0.010144957445490108
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.01
+p(G) = 0.3
+p(S) = 0.01
+observations = [False, True, False]
+Observación # 1 :
+p(L,t=1) = 0.010288545613523752
+Observación # 2 :
+p(L,t=2) = 0.04283566663534717
+Observación # 3 :
+p(L,t=3) = 0.010632526334067173
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.01
+p(G) = 0.3
+p(S) = 0.01
+observations = [False, True, True]
+Observación # 1 :
+p(L,t=1) = 0.010288545613523752
+Observación # 2 :
+p(L,t=2) = 0.04283566663534717
+Observación # 3 :
+p(L,t=3) = 0.13739309605125744
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.01
+p(G) = 0.3
+p(S) = 0.01
+observations = [True, True, True]
+Observación # 1 :
+p(L,t=1) = 0.07246653919694074
+Observación # 2 :
+p(L,t=2) = 0.21292590589507843
+Observación # 3 :
+p(L,t=3) = 0.4769498023241884
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.01
+p(G) = 0.3
+p(S) = 0.01
+observations = [True, True, True, True, True]
+Observación # 1 :
+p(L,t=1) = 0.07246653919694074
+Observación # 2 :
+p(L,t=2) = 0.21292590589507843
+Observación # 3 :
+p(L,t=3) = 0.4769498023241884
+Observación # 4 :
+p(L,t=4) = 0.7530646103957316
+Observación # 5 :
+p(L,t=5) = 0.9105191483935025
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.01
+p(G) = 0.3
+p(S) = 0.01
+observations = [True, True, True, False, False, True, False, True, True, True, True, True, False, True, True, True, True, True]
+Observación # 1 :
+p(L,t=1) = 0.07246653919694074
+Observación # 2 :
+p(L,t=2) = 0.21292590589507843
+Observación # 3 :
+p(L,t=3) = 0.4769498023241884
+Observación # 4 :
+p(L,t=4) = 0.022730504231185288
+Observación # 5 :
+p(L,t=5) = 0.010328842241956489
+Observación # 6 :
+p(L,t=6) = 0.042961288130530434
+Observación # 7 :
+p(L,t=7) = 0.010634463331824159
+Observación # 8 :
+p(L,t=8) = 0.043913297355535535
+Observación # 9 :
+p(L,t=9) = 0.14030396582537552
+Observación # 10 :
+p(L,t=10) = 0.35654370667979857
+Observación # 11 :
+p(L,t=11) = 0.6499977767047093
+Observación # 12 :
+p(L,t=12) = 0.8611210776630452
+Observación # 13 :
+p(L,t=13) = 0.09055734792474143
+Observación # 14 :
+p(L,t=14) = 0.25485250967888534
+Observación # 15 :
+p(L,t=15) = 0.5349172490464832
+Observación # 16 :
+p(L,t=16) = 0.7935569535218334
+Observación # 17 :
+p(L,t=17) = 0.9276582220705407
+Observación # 18 :
+p(L,t=18) = 0.9771451231103503
+
+Este es un modelo BKT que penaliza enormemente las respuestas incorrectas, haciendo que se tenga que volver a responder como 5 respuestas correctas consecutivas para poder alcanzar el dominio.
+
+El valor de p(T) no debería ser 0.0.
+Con un valor p(T) = 0.0, se podría alcanzar el dominio, pero se requiere un número muy alto de respuestas correctas consecutivas para ello, y por supuesto, no equivocarse.
+
+
+
+==================================
+
+CONJUNTO DE PARÁMETROS 3
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.1
+p(G) = 0.02
+p(S) = 0.25
+observations = [False, False, False]
+Observación # 1 :
+p(L,t=1) = 0.10466128029832195
+Observación # 2 :
+p(L,t=2) = 0.12606115464189815
+Observación # 3 :
+p(L,t=3) = 0.1319420573637251
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.1
+p(G) = 0.02
+p(S) = 0.25
+observations = [False, False, True]
+Observación # 1 :
+p(L,t=1) = 0.10466128029832195
+Observación # 2 :
+p(L,t=2) = 0.12606115464189815
+Observación # 3 :
+p(L,t=3) = 0.8595764395152679
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.1
+p(G) = 0.02
+p(S) = 0.25
+observations = [True, True, True]
+Observación # 1 :
+p(L,t=1) = 0.4901734104046243
+Observación # 2 :
+p(L,t=2) = 0.9757114007710667
+Observación # 3 :
+p(L,t=3) = 0.9994029590307147
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.1
+p(G) = 0.02
+p(S) = 0.25
+observations = [False, True, False]
+Observación # 1 :
+p(L,t=1) = 0.10466128029832195
+Observación # 2 :
+p(L,t=2) = 0.8328253133219867
+Observación # 3 :
+p(L,t=3) = 0.6036741854834635
+
+0.02 => Directo = 2% de probabilidad
+0.98 * 0.1 => Después de interactuar con 1 ejercicio = 0.098 = 9,8% de probabilidad
+
+Decir que p(G) es extremadamente bajo cuando un estudiante no ha dominado la habilidad, significa que hay una gran seguridad de que este estudiante tuvo que haber dominado la habilidad si respondió correctamente.
+Más bien, p(G) se debería entender de la siguiente manera: "la probabilidad de que el estudiante responda correctamente, pero sin haber realmente dominado la habilidad".
+
+Además, decir que p(S) es relativamente bajo, pero no tan bajo, indica que cuando un estudiante ya ha dominado la habilidad, hay una probabilidad decente o no despreciable de equivocarse. No obstante, aquí se sigue cumpliendo que si el estudiante responde correctamente, es más probable que haya dominado la habilidad.
+
+Si p(G) = 0 y p(S) = 0, esto significa que, si un estudiante respondió correctamente, es porque necesariamente tuvo que haber dominado la habilidad.
+También, si un estudiante respondió incorrectamente, es porque necesariamente aún no domina la habilidad.
+
+p(G) afecta la probabilidad de dominio del estudiante cuando el estudiante responde incorrectamente.
+p(S) afecta la probabilidad de dominio del estudiante cuando el estudiante responde correctamente.
+
+==================================
+
+CONJUNTO DE PARÁMETROS 2
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.2
+p(G) = 0.01
+p(S) = 0.1
+observations = [False, False, False]
+Observación # 1 :
+p(L,t=1) = 0.20164575190290066
+Observación # 2 :
+p(L,t=2) = 0.21990247745438338
+Observación # 3 :
+p(L,t=3) = 0.22214842082940303
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.2
+p(G) = 0.01
+p(S) = 0.1
+observations = [False, False, True]
+Observación # 1 :
+p(L,t=1) = 0.20164575190290066
+Observación # 2 :
+p(L,t=2) = 0.21990247745438338
+Observación # 3 :
+p(L,t=3) = 0.9696627147374666
+
+
+Parámetros del modelo BKT:
+p(L,t=0) = 0.02
+p(T) = 0.2
+p(G) = 0.01
+p(S) = 0.1
+observations = [True, True, True]
+Observación # 1 :
+p(L,t=1) = 0.7179856115107914
+Observación # 2 :
+p(L,t=2) = 0.9965237440695252
+Observación # 3 :
+p(L,t=3) = 0.9999689933578948
+
+==================================
+
+CONJUNTO DE PARÁMETROS 1
+Parámetros del modelo BKT:
+p(L,t=0) = 0.1
+p(T) = 0.15
+p(G) = 0.001
+p(S) = 0.01
+observations = [True, True, True]
+Observación # 1 :
+p(L,t=1) = 0.9923423423423423
+Observación # 2 :
+p(L,t=2) = 0.9999933745593165
+Observación # 3 :
+p(L,t=3) = 0.9999999943114527
+
+observations = [False, False, False]
+Observación # 1 :
+p(L,t=1) = 0.15094433951783134
+Observación # 2 :
+p(L,t=2) = 0.15150994780973479
+Observación # 3 :
+p(L,t=3) = 0.1515166041963701
+
+observations = [False, False, True]
+Observación # 1 :
+p(L,t=1) = 0.15094433951783134
+Observación # 2 :
+p(L,t=2) = 0.15150994780973479
+Observación # 3 :
+p(L,t=3) = 0.9952187709971881
+
+CONCLUSIONES: 
+Con estos parámetros de BKT:
+p(L,t=0) = 0.1
+p(T) = 0.15
+p(G) = 0.001
+p(S) = 0.01
+Basta con que un estudiante responda correctamente 1 ejercicio para dominarlo.
+
+Un incremento pequeño de p(L), sobre todo cuando este valor es muy pequeño, incide enormemente y de manera favorable en el cálculo de la probabilidad del nivel de dominio del estudiante según BKT.
+
+https://www.cs.williams.edu/~iris/res/bkt-balloon/index.html#start
+What happens to P(learned if correct) and P(learned if wrong) if P(guess) and/or P(slip) exceeds 0.5?
+P(learned) is higher if the user answers incorrectly vs. correctly. This is why P(guess) is typically bounded at 0.3 and P(slip) at 0.1. [3]
+More Accurate Student Modeling Through Contextual Estimation of Slip and Guess Probabilities in Bayesian Knowledge Tracing [pdf]
+d Baker, R.S., Corbett, A.T. and Aleven, V., 2008.
+
+What happens to P(learned) if the student answers incorrectly? Hint: compare P(learned if wrong) with P(known) (aka. your previous P(learned)).
+Generally, P(learned) is always assumed to increase because BKT considers every answer, wrong or right, as a learning opportunity that brings you one step closer to mastery.
+However, can you think of a situation where P(learned) might decrease with a wrong answer? Feel free to try modeling different scenarios with the sliders using your knowledge of the BKT parameters.
+
+Keep exploring! Can you find any other flaws or interesting characteristics of BKT?
+
+REFERENCES
+Knowledge Tracing: Modeling the Acquisition of Procedural Knowledge Tracing [pdf]
+Corbett, A.T. & Anderson, J.R., 1995.
+Individualized Bayesian Knowledge Tracing Models [pdf]
+Yudelson, M.V., Koedinger, K.R. and Gordon, G.J., 2013.
+More Accurate Student Modeling Through Contextual Estimation of Slip and Guess Probabilities in Bayesian Knowledge Tracing [pdf]
+d Baker, R.S., Corbett, A.T. and Aleven, V., 2008.
