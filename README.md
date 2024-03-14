@@ -42,7 +42,7 @@ Todos los módulos fueron originalmente implementados con Python 3.11.1, en el e
 2. **e_base_logit_function_v2.py**: Módulo de soporte para graficar la función logit de base Euler (e). Este módulo cumple una función similar al anterior, pero lo hace de una forma diferente. Por supuesto, este utiliza librerías de Matplotlib y NumPy para generar gráficos.
 3. **standard_logistic_function.py**: Módulo de soporte para graficar la función logística estándar. Este módulo utiliza librerías de Matplotlib y NumPy para generar gráficos.
 
-# Módulos sandbox de Matplotlib y NumPy
+### Módulos sandbox de Matplotlib y NumPy
 
 1. **matplotlib_test.py**: Módulo sandbox para probar la librería Matplotlib. Note que Matplotlib requiere NumPy.
 2. **numpy_test.py**: Módulo sandbox para probar la librería NumPy
@@ -76,10 +76,10 @@ Por supuesto, también se recomienda revisar el código fuente de los módulos i
 
 Sin embargo, en el caso de aquellos módulos que requieran Matplotlib o NumPy, se recomienda el uso de ambientes virtuales (venv) en Python. Para ello, se puede seguir la documentación escrita a manera de comentarios en los archivos **numpy_test.py** y **matplotlib_test.py**, los cuales se encuentran en este repositorio. En particular, recomienda ver especialmente el [video en YouTube](https://www.youtube.com/watch?v=q6dnyS-Ailo "video en YouTube")  incluido en el primero de los dos archivos. En ambos archivos también se encuentra información básica sobre cómo comenzar a usar Matplotlib y NumPy en Python.
 
-### Licencia
+## Licencia
 
 MIT.
 
-### Autor
+## Autor
 
 Leandro Alejandro Niebles Carbonó (GitHub: carbonol).
