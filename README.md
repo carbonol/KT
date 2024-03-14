@@ -75,3 +75,11 @@ Estos módulos se pueden ejecutar con un intérprete de Python. En general, para
 Por supuesto, también se recomienda revisar el código fuente de los módulos incluidos en **Otros módulos**, para entender mejor cómo funcionan los sistemas construidos en este repositorio.
 
 Sin embargo, en el caso de aquellos módulos que requieran Matplotlib o NumPy, se recomienda el uso de ambientes virtuales (venv) en Python. Para ello, se puede seguir la documentación escrita a manera de comentarios en los archivos **numpy_test.py** y **matplotlib_test.py**, los cuales se encuentran en este repositorio. En particular, recomienda ver especialmente el [video en YouTube](https://www.youtube.com/watch?v=q6dnyS-Ailo "video en YouTube")  incluido en el primero de los dos archivos. En ambos archivos también se encuentra información básica sobre cómo comenzar a usar Matplotlib y NumPy en Python.
+
+### Licencia
+
+MIT.
+
+### Autor
+
+Leandro Alejandro Niebles Carbonó (GitHub: carbonol).
