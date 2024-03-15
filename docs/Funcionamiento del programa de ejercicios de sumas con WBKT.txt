@@ -1,0 +1,212 @@
+Funcionamiento del programa de ejercicios de sumas con WBKT (Detección de nueva respuesta y evaluación)
+-------------------------------------------------------------------------------------------------------
+
+current_consecutive_superior_time_response_count_per_dl = []
+current_consecutive_inferior_time_response_count_per_dl = []
+
+ 0  1  2  3  4  5  6 <-- Nivel de dificultad
+[0, 0, 0, 0, 0, 0, 0] <-- Contadores de respuestas correctas superiores sucesivas (Menor tiempo de lo usual para responder correctamente)
+[0, 0, 0, 0, 0, 0, 0] <-- Contadores de respuestas correctas inferiores sucesivas (Mayor tiempo de lo usual para responder correctamente)
+
+exercise_dl_index = exercise.get_difficulty().get_difficulty_level() - 1
+dl_wbkt_model = wbkt_models[exercise_dl_index]
+
+exercise_dl_index = 0 (Para el primer nivel de dificultad)
+
+ccstrc = current_consecutive_superior_time_response_count_per_dl[exercise_dl_index]
+ccitrc = current_consecutive_inferior_time_response_count_per_dl[exercise_dl_index]
+
+ccstrc <-- Contador de respuestas correctas superiores sucesivas para el nivel de dificultad actual. (Menor tiempo de lo usual para responder correctamente)
+ccitrc <-- Contador de respuestas correctas inferiores sucesivas para el nivel de dificultad actual. (Mayor tiempo de lo usual para responder correctamente)
+
+1) Al recibir una nueva respuesta (Nueva observación):
+- Aumenta el número de intentos para el ejercicio en 1*
+- Se considera el modelo WBKT para el nivel de dificultad del ejercicio actual**
+- Se considera el número de veces sucesivas que se respondió de forma correcta y rápida, así como el número de veces sucesivas que se respondió de forma correcta y lenta. ***
+- Se llevan los siguientes datos al validador de respuestas, para evaluar los siguientes pasos a realizar, dada la nueva respuesta del estudiante:
+---- El ejercicio: Que tiene un nivel de dificultad...*
+---- La respuesta del usuario (Un número entero)*
+---- El tiempo de respuesta [correcta] en segundos* (De hecho, se ingresa el tiempo transcurrido desde el momento en que el estudiante vio el ejercicio, y se asume que este tiempo es de una respuesta correcta - hasta que el validador de respuestas demuestre lo contrario.)
+---- El número de intentos realizados para un mismo ejercicio.*
+
+---- El modelo WBKT del nivel de dificultad actual (el mismo del ejercicio al que respondió ahora)**
+---- El número de veces sucesivas que se respondió de forma correcta y rápida***
+---- El número de veces sucesivas que se respondió de forma correcta y lenta***
+
+* Previsto en el diseño original del programa de ejercicios de sumas
+** Adaptación realizada por el modelo WBKT
+*** Adaptación NO prevista en la formulación original del modelo WBKT y NO previsto en el diseño original del programa de ejercicios de sumas --> Este es una adaptación adicional que se hizo para la prueba.
+
+NOTA IMPORTANTE: Es importante decir que se modificó el verificador de ejercicios para que tuviese en cuenta las estimaciones de los modelos WBKT (Esto mismo aplica para el caso del PFA+)
+
+2) Para la evaluación automática de la respuesta dada por el estudiante, una vez recibidos los datos mencionados:
+- Se asume pD de 0.95**
+- Se considera p(L) máximo de 0.99, un número máximo de iteraciones L de 1100 y una precisión de 4 cifras decimales para la tercera prueba empírica, que en este caso se realiza para calcular dinámicamente el criterio para disminuir el nivel de dificultad o el criterio de probabilidad para refuerzo pR.
+
+- Se verifica la corrección (correctness)
+- Se inicializan los siguientes datos:
+---- Si el tiempo de respuesta correcta es superior (is_correct_response_time_superior) - Al respecto, no se toma decisión alguna inicialmente (None).
+---- Si el tiempo de respuesta correcta es inferior (is_correct_response_time_inferior) - Al respecto, no se toma decisión alguna inicialmente (None).
+---- Se asume inicialmente que NO se han contabilizado respuestas correctas superiores sucesivas para el nivel de dificultad actual (ccstrc = 0).
+---- Se asume inicialmente que NO se han contabilizado respuestas correctas inferiores sucesivas para el nivel de dificultad actual (ccitrc = 0).
+---- Se declara que hay un VEREDICTO de tiempo de respuesta correcta a considerar - Al respecto, no se asigna un valor concreto inicialmente (None).
+
+- Si la respuesta es correcta (correctness == True):
+
+---- Si el tiempo de respuesta del usuario es menor o igual que el tiempo de referencia superior para el nivel de dificultad [Este tiempo es inclusivo], entonces se decide que la respuesta del usuario es "correcta y rápida" (CR).
+---- Si el tiempo de respuesta del usuario es mayor que tiempo de referencia inferior para el nivel de dificultad [Este tiempo NO es inclusivo], entonces se decide que la respuesta del usuario es "correcta pero lenta" (CL).
+
+---- Si la respuesta del usuario es CR:
+		- Obtenga el número de veces en que el estudiante obtuvo resultados CR de forma consecutiva en el nivel de dificultad del ejercicio (actual), y actualice este valor, sumándole 1.
+		- Decida que la calidad del tiempo de la respuesta dada es rápida o superior (R).
+
+---- Si la respuesta del usuario es CL:
+		- Obtenga el número de veces en que el estudiante obtuvo resultados CL de forma consecutiva en el nivel de dificultad del ejercicio (actual), y actualice este valor, sumándole 1.
+		- Decida que la calidad del tiempo de la respuesta dada es lenta o inferior (L).
+
+----- Si la respuesta del usuario no es CR ni CL:
+		- Decida que la calidad del tiempo de la respuesta dada es esperada o promedio (E).
+
+
+[DESDE AQUÍ - ESTO SE PUEDE TABULAR]
+
+- Se asume inicialmente que el factor de incremento asociado a W(G) es 0 (w_g_incr_factor = 0). <-- Este factor de incremento es el que determinará al final cuál será el cambio en el peso w(G), el cual puede ser un incremento, decremento, o ningún cambio con respecto al peso w(G) anterior.
+- Si el tiempo de respuesta es CR: El factor de incremento (w_g_incr_factor) disminuye dependiendo del número de respuestas correctas superiores sucesivas para el nivel de dificultad actual (ccstrc).
+	Por ejemplo, si el número de respuestas correctas superiores sucesivas para el nivel de dificultad actual es 1, entonces el factor de incremento de w(G) [delta(w(G))] es -1.
+	Por ejemplo, si el número de respuestas correctas superiores sucesivas para el nivel de dificultad actual es 2, entonces el factor de incremento de w(G) [delta(w(G))] es -2.
+	Y así sucesivamente...
+
+- Si el tiempo de respuesta es CL: El factor de incremento (w_g_incr_factor) aumenta dependiendo del número de respuestas correctas inferiores sucesivas para el nivel de dificultad actual (ccitrc).
+	Por ejemplo, si el número de respuestas correctas inferiores sucesivas para el nivel de dificultad actual es 1, entonces el factor de incremento de w(G) [delta(w(G))] es 1.
+	Por ejemplo, si el número de respuestas correctas inferiores sucesivas para el nivel de dificultad actual es 2, entonces el factor de incremento de w(G) [delta(w(G))] es 2.
+	Y así sucesivamente...
+
+- En otro caso (Es decir, si se obtiene un tiempo de respuesta correcta esperado): El factor de incremento de w(G) es 0.
+
+[HASTA AQUÍ - ESTO SE PUEDE TABULAR]
+
+
+- Halle el nuevo peso w(G) a asignar al modelo WBKT del nivel de dificultad actual, dependiendo del valor actual de w(G) del modelo WBKT y del factor de incremento de w(G) considerado.
+
+3) Para calcular el nuevo peso w(G) a asignar al modelo WBKT del nivel de dificultad actual:
+
+- Primero, se halla el factor de incremento w(G) que está siendo aplicado actualmente al modelo WBKT (cwwif).
+Para esto, se toma el valor w(G). 
+El factor de incremento de w(G) [delta(w(G))] se calcula así:
+Si w(G) = 1.0 - Esto significa que debería usarse el valor p(G) original para calcular p(L), entonces, delta(w(G)) = 0.
+Si w(G) > 1.0 - Esto significa que debería usarse el valor p(G) debería aumentar con respecto a lo usual para calcular p(L). En este caso, el valor resultante de delta(w(G)) aumenta en 1 cada vez que el valor de w(G) aumenta en 0.2 con respecto al valor 1.0.
+Si w(G) < 1.0 - Esto significa que debería usarse el valor p(G) debería disminuir con respecto a lo usual para calcular p(L). En este caso, el valor resultante de delta(w(G)) disminuye en 1 cada vez que el valor de w(G) disminuye en 0.1 con respecto al valor 1.0.
+
+Las asignaciones de delta(w(G)) anteriores según el peso w(G) se ilustran en la siguiente tabla, para valores w(G) que estén entre 0.5 y 2.0.
+
+[DESDE AQUÍ - ESTO SE PUEDE TABULAR]
+
+Aumentos y disminuciones:
+w(G) => delta(w(G))
+0.5 => -5
+0.6 => -4
+0.7 => -3
+0.8 => -2
+0.9 => -1
+1.0 => 0
+1.2 => +1
+1.4 => +2
+1.6 => +3
+1.8 => +4
+2.0 => +5
+
+[HASTA AQUÍ - ESTO SE PUEDE TABULAR]
+
+El valor delta(w(G)) se utiliza para determinar y conservar el seguimiento de los crecimientos y decrecimientos de los pesos modificados en los modelos WBKT a través de la práctica, sin tener que alterar directamente los parámetros de pesos dados inicialmente en los modelos WBKT.
+
+- Segundo, se halla el nuevo factor de incremento w(G)' [delta(w(G))'] que resulta de la calidad de la última respuesta dada por el estudiante.
+	El valor w(G)' a ser usado en la última respuesta se mantiene igual con respecto al valor anterior w(G) si la calidad de la respuesta no es ni CR ni CL.
+	El valor w(G)' a ser usado en la última respuesta disminuye con respecto al valor anterior w(G) si la calidad de la respuesta es CR, especialmente si ha logrado anteriormente respuestas de CR de forma consecutiva.
+	El valor w(G)' a ser usado en la última respuesta aumenta con respecto al valor anterior w(G) si la calidad de la respuesta es CL, especialmente si ha logrado anteriormente respuestas de CL de forma consecutiva.
+
+- Tercero, se halla el nuevo peso w(G) a partir del nuevo factor de incremento para w(G).
+Para esto, se toma el valor delta(w(G))'.
+El nuevo peso w(G) se calcula así:
+En primer lugar, se tiene en cuenta que:
+Para tratar de no afectar demasiado el comportamiento del modelo WBKT+ mediante las modificaciones de pesos con respecto a los originales, y no arriesgarse a que el modelo modificado dinámicamente resultante resultante degenerado, se decidió limitar los factores de incremento de w(G) [delta(w(G))], de manera que estos no sobrepasen los valores de -5 y 5, lo que equivale a que los pesos asignados a los modelos WBKT no sobrepasen los valores de 0.5 y 2.0.
+Entonces:
+El nuevo peso w(G) se calcula así:
+Si delta(w(G))' = 0 - Esto significa que no se debería modificar el peso w(G) con respecto al anterior peso w(G).
+Si delta(w(G))' > 0 - Esto significa que se debería aumentar el peso w(G) con respecto al anterior peso w(G), de manera proporcional a la magnitud de delta(w(G))', según lo explicado en la tabla.
+Si delta(w(G))' < 0 - Esto significa que se debería disminuir el peso w(G) con respecto al anterior peso w(G), de manera proporcional a la magnitud de delta(w(G))', según lo explicado en la tabla.
+
+2) Para la evaluación automática de la respuesta dada por el estudiante, una vez recibidos los datos mencionados [CONTINUACIÓN]:
+
+- Actualice el valor w(G) del modelo WBKT por el valor w(G) obtenido al aumentarlo de acuerdo al nuevo factor de incremento resultante delta(w(G))'
+
+- ABSTRACCIÓN: Actualice el modelo WBKT, teniendo en cuenta el nuevo valor w(G). En esta actualización, el modelo WBKT se encarga de actualizar el valor p(G) según el peso w(G) asignado. --> De aquí se obtiene un nuevo valor p(L) para el tiempo t.
+
+[ESTAS DOS CONDICIONES: OK CON RESPECTO A LA ADAPTACIÓN DEL DISEÑO BKT CON NIVELES DE DIFICULTAD]
+- Se revisa si p(L) >= pD; es decir, si se considera que se dominó la habilidad (p_lt_is_within_learned_criteria - True or False)
+- Se revisa si p(L) en el tiempo t >= p(L) en el tiempo t - 1. Es decir, si p(L) aumentó o permaneció igual con respecto al valor p(L) anterior.
+
+- Se calcula dinámicamente el criterio de valor de refuerzo, utilizando la tercera prueba empírica.
+Para ello, se utilizan los parámetros descritos anteriormente, para encontrar el límite del valor p(L) donde p(L) no decrece con respuestas incorrectas.
+El límite encontrado para este caso de estudio con el modelo WBKT es de 0.011434820225164358.
+
+NOTA: Aquí hubo un error. (ERROR 1)
+Este valor debería haberse encontrado mediante una media aritmética entre el valor 0.011434820225164358 y el valor 0.5, por lo menos.
+De esta manera se debió haber obtenido un valor pR de 0.2557174101125822.
+
+- Se revisa si p(L) <= pR; es decir, si se considera que el estudiante requiere refuerzo.
+- Se revisa si p(L) en el tiempo t <= p(L) en el tiempo t - 1. Es decir, si p(L) disminuyó o permaneció igual con respecto al valor p(L) anterior.
+
+NOTA: Aquí hubo dos posibles errores. 
+(ERROR 2) Es posible que se haya invertido la comparación entre p(L) y pR, haciendo que el estudiante requiera refuerzo cuando p(L) >= pR. Sin embargo, si este fuese el caso, entonces no hubiese sido posible terminar la práctica con todos los niveles de dificultad => ERROR DESCARTADO.
+
+(ERROR 3) - Error mínimo: Es considerar la igualdad en la comparaciones entre p(L) y pR, y entre los p(L) en los tiempos t y t-1. Sólo debería considerarse, en ambos casos, si es menor. => En esto se desvía del diseño original.
+p_lt_did_not_increase DEBERÍA SER p_lt_decreased
+
+- Se revisa si el estudiante alcanzó el número máximo de intentos para el ejercicio. (max_response_attempts_reached) Es decir, si el número de intentos realizado es mayor o igual al límite de intentos registrados, dependiendo del nivel de dificultad del ejercicio.
+
+IMPORTANTE EN EL VEREDICTO:
+Aparte de la desviación leve en cómo se transiciona a un nivel de dificultad inferior, según la figura 14 (REVISAR), se incluye también la condición de que el estudiante haya alcanzado el número máximo de intentos permitidos para el ejercicio. Por supuesto, el número de intentos proviene del diseño del programa de ejercicios de sumas, y este sirve para permitir que el estudiante practique un ejercicio un número suficiente de veces, antes de pasar a otro.
+
+La decisión del siguiente ejercicio es así:
+- Si el valor p(L) del modelo WBKT sugiere que el nivel de dificultad debería aumentar o disminuir, se cambia el ejercicio.
+- Si no:
+-	Si la respuesta es correcta: Cambie de ejercicio.
+-	Si la respuesta no es correcta, pero no se alcanzado el número máximo de intentos para el ejercicio, mantenga el mismo ejercicio. De lo contrario, cambie de ejercicio.
+
+1) Al recibir una nueva respuesta (Nueva observación) [CONTINUACIÓN]:
+
+- Si la respuesta obtenida es correcta:
+---- Se indica al usuario que la respuesta es correcta.
+
+---- Si la respuesta es CR, entonces: [OK]
+		Se indica al usuario que la respuesta es CR.
+		El contador de número de veces consecutivas en que se obtiene un resultado CR, para el nivel de dificultad actual, aumenta en 1.
+		PERO: El contador de número de veces consecutivas en que se obtiene un resultado CL, para el nivel de dificultad actual, se reestablece a 0.
+
+---- Si la respuesta es CL, entonces: [OK]
+		Se indica al usuario que la respuesta es CL.
+		El contador de número de veces consecutivas en que se obtiene un resultado CL, para el nivel de dificultad actual, aumenta en 1.
+		PERO: El contador de número de veces consecutivas en que se obtiene un resultado CR, para el nivel de dificultad actual, se reestablece a 0.
+
+---- Si la respuesta es correcta, pero no es ni CR ni CL, entonces: [OK]
+		Se indica al usuario que la respuesta es correcta, pero no es ni CR ni CL.
+		El contador de número de veces consecutivas en que se obtiene un resultado CR, para el nivel de dificultad actual, se reestablece a 0.
+		El contador de número de veces consecutivas en que se obtiene un resultado CL, para el nivel de dificultad actual, se reestablece a 0.
+
+---- Se indica al usuario cuál fue el tiempo de respuesta correcta para el ejercicio.
+---- Se indica al usuario el número total de intentos realizados para el ejercicio.
+
+- Si la respuesta es incorrecta:
+---- Se indica al usuario que la respuesta es incorrecta.
+---- Se indica al usuario el número total de intentos realizados hasta el momento para el ejercicio.
+NOTE QUE las respuestas incorrectas no reestablecen los contadores de resultados CR ni CL.
+Esto se hizo pensando en que una respuesta incorrecta no necesariamente implica que el estudiante no pueda lograr responder correctamente al ejercicio en los siguientes intentos, si bien obtener respuestas incorrectas supone una pérdida de tiempo, dado que el tiempo de respuesta se sigue contabilizando hasta que se responda correctamente o hasta que se cambie de ejercicio. Sin embargo, es también válido afirmar que podría haberse reestablecido los contadores de CL y CR consecutivos de forma inmediata.
+
+
+
+¿Cuál es el valor de pR?
+- Se halló que pR es 0.2557174101125822 [COMENTARIO]
+- El valor real de pR es 0.011434820225164358?
+
+
+NOTA: En el cálculo de veces consecutivas en que la respuesta del estudiante se clasifique como CL o CR, también se incluye el primer valor obtenido.

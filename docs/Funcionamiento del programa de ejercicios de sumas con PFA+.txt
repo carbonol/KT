@@ -1,0 +1,78 @@
+Funcionamiento del programa de ejercicios de sumas con PFA+ (Detección de nueva respuesta y evaluación)
+-------------------------------------------------------------------------------------------------------
+
+1) Al recibir una nueva respuesta (Nueva observación):
+- Se obtiene el tiempo de respuesta correcta en segundos (exercise_response_time_in_seconds).
+- Se obtiene la respuesta del estudiante (response)
+- Aumenta el número de intentos para el ejercicio en 1 (same_exercise_attempts)
+- Obtenga la habilidad j involucrada en la práctica del ejercicio (En este caso, j es el nivel de dificultad)
+
+(etc...)
+
+- Se llevan los siguientes datos al validador de respuestas, para evaluar los siguientes pasos a realizar, dada la nueva respuesta del estudiante:
+---- El ejercicio: Que tiene un nivel de dificultad...*
+---- La respuesta del usuario (Un número entero)*
+---- El tiempo de respuesta en segundos*
+---- El número de intentos realizados para un mismo ejercicio.*
+
+---- El modelo PFA+ **
+---- La habilidad j involucrada en la realización del ejercicio. **
+
+2) Para la evaluación automática de la respuesta dada por el estudiante, una vez recibidos los datos mencionados:
+- pD = 0.95
+- pR = 0.25
+
+- Se verifica la corrección (correctness)
+- Se inicializan los siguientes datos:
+---- Si el tiempo de respuesta correcta es superior (is_correct_response_time_superior) - Al respecto, no se toma decisión alguna inicialmente (None).
+---- Si el tiempo de respuesta correcta es inferior (is_correct_response_time_inferior) - Al respecto, no se toma decisión alguna inicialmente (None).
+
+---- Un indicador de calidad de tiempo de respuesta (correct_response_time_quality) - Al respecto, no se toma decisión alguna inicialmente (None). - Esto es asociado al validador de respuesta.
+---- Un indicador de tipo de resultado (kcs_success_status) - Al respecto, no se toma decisión alguna inicialmente (None).  - Esto es asociado al modelo PFA+
+
+- Si la respuesta es correcta (correctness == True):
+
+---- Si el tiempo de respuesta del usuario es menor o igual que el tiempo de referencia superior para el nivel de dificultad [Este tiempo es inclusivo], entonces se decide que la respuesta del usuario es "correcta y rápida" (CR).
+---- Si el tiempo de respuesta del usuario es mayor que tiempo de referencia inferior para el nivel de dificultad [Este tiempo NO es inclusivo], entonces se decide que la respuesta del usuario es "correcta pero lenta" (CL).
+
+---- Si el resultado es CR: 
+		El indicador de calidad de tiempo de respuesta (correct_response_time_quality) es R. - Esto es asociado al validador de respuesta.
+		El indicador de tipo de resultado (kcs_success_status) es CR. <Redundancia> - Esto es asociado al modelo PFA+
+
+---- Si el resultado es CL: 
+		El indicador de calidad de tiempo de respuesta (correct_response_time_quality) es L.
+		El indicador de tipo de resultado (kcs_success_status) es CL. <Redundancia>
+
+---- Si el resultado es C (No es CR ni CL):
+		El indicador de calidad de tiempo de respuesta (correct_response_time_quality) es E (Esperado).
+		El indicador de tipo de resultado (kcs_success_status) es C. <Redundancia>		
+
+- Si la respuesta NO es correcta (correctness == False):
+	El indicador de tipo de resultado (kcs_success_status) es I. <Redundancia>		
+
+- ABSTRACCIÓN: Actualice el modelo PFA+, teniendo en cuenta la habilidad (asociada al nivel de dificultad) j, el tipo de resultado obtenido para la habilidad j (I, CL, C, CR). --> De aquí resulta la probabilidad p(m) a posteriori de responder correctamente un ejercicio que involucre la habilidad j.
+
+[ESTAS DOS CONDICIONES: SON SIMILARES A LA ADAPTACIÓN DEL DISEÑO BKT CON NIVELES DE DIFICULTAD, PERO SE SIMPLIFICARON UN POCO, SABIENDO QUE ES MÁS INTUTIVO SABER QUÉ VALORES p(m) puede tener el modelo]
+- Se revisa si p(m) >= pD; es decir, si se considera que se dominó la habilidad j.
+- Se revisa si p(m) <= pR; es decir, si se considera que es necesario reforzar con el nivel de dificultad j-1
+
+- Se revisa si el estudiante alcanzó el número máximo de intentos para el ejercicio. (max_response_attempts_reached) Es decir, si el número de intentos realizado es mayor o igual al límite de intentos registrados, dependiendo del nivel de dificultad del ejercicio.
+
+- Se inicializan los siguientes datos:
+---- El veredicto de siguiente nivel de dificultad (difficulty_verdict) - Al respecto, no se toma decisión alguna inicialmente (None).
+---- El siguiente nivel de dificultad (next_difficulty) - Al respecto, no se toma decisión alguna inicialmente (None).
+
+---- El veredicto de siguiente ejercicio (exercise_change_verdict) - Al respecto, no se toma decisión alguna inicialmente (None).
+
+- Se toma la decisión del siguiente nivel de dificultad, así:
+---- Si se alcanza pD y se responde correctamente ----> Aumente el nivel de dificultad (en 1).
+---- Si se alcanza pR y se responde incorrectamente, además de que se agotaron los números de intentos máximos para el ejercicio ----> Disminuya el nivel de dificultad (en 1).
+---- Si no: Mantenga el mismo nivel de dificultad.
+
+- Se toma la decisión del siguiente ejercicio, así: [ESTO ES EXACTAMENTE IGUAL QUE EN EL MODELO WBKT]
+---- Si el nivel de dificultad cambia, se cambia el ejercicio.
+---- Sino:
+		- Si la respuesta es correcta: Cambie de ejercicio.
+		- Si la respuesta no es correcta, pero no se alcanzado el número máximo de intentos para el ejercicio, mantenga el mismo ejercicio. De lo contrario, cambie de ejercicio.
+
+NOTE QUE: La evaluación se realiza de forma similar al modelo WBKT, excepto, por supuesto, por los cálculos que realiza el modelo PFA+ para actualizar la proabilidad de aprendizaje mediante la resolución de problemas del nivel de dificultad del ejercicio al que respondió el estudiante.
